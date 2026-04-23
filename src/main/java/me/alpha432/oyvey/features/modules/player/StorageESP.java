@@ -10,18 +10,18 @@ import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Search extends Module {
+public class StorageESP extends Module {
     // Настройки
-    public boolean drawTracers = true; // Настройка выключения трейсеров
+    public boolean drawTracers = true; 
     
     // Карта для хранения найденных объектов и их типов
     private final Map<BlockPos, BlockEntityType> foundBlocks = new HashMap<>();
 
     public enum BlockEntityType {
-        CHEST(new Color(139, 69, 19), "Chest"),       // Коричневый
-        SHULKER(new Color(255, 105, 180), "Shulker"), // Розовый
-        HOPPER(new Color(128, 128, 128), "Hopper"),   // Серый
-        OTHER(new Color(45, 45, 45), "Other");        // Темно-серый
+        CHEST(new Color(139, 69, 19), "Chest"),       
+        SHULKER(new Color(255, 105, 180), "Shulker"), 
+        HOPPER(new Color(128, 128, 128), "Hopper"),   
+        OTHER(new Color(45, 45, 45), "Other");        
 
         public final Color color;
         public final String name;
@@ -31,9 +31,9 @@ public class Search extends Module {
         }
     }
 
-    public Search() {
-        // Категория заменена на PLAYER
-        super("Search", "Advanced BlockEntity ESP", Category.PLAYER, true, false, false);
+    public StorageESP() {
+        // Имя изменено на StorageESP, категория PLAYER
+        super("StorageESP", "Highlights storage blocks like chests and shulkers", Category.PLAYER, true, false, false);
     }
 
     @Override
@@ -60,14 +60,11 @@ public class Search extends Module {
             BlockEntityType type = entry.getValue();
             Color c = type.color;
 
-            // 1. Получаем форму блока (Box)
             Box box = mc.world.getBlockState(pos).getCollisionShape(mc.world, pos).getBoundingBox();
             Box renderBox = box.offset(pos); 
 
-            // 2. Рисуем бокс нужного цвета
             renderESP(matrixStack, renderBox, c);
 
-            // 3. Рисуем трейсер (линию), если настройка включена
             if (drawTracers) {
                 renderTracer(matrixStack, renderBox.getCenter(), c);
             }
@@ -75,7 +72,7 @@ public class Search extends Module {
     }
 
     private void renderESP(MatrixStack matrixStack, Box box, Color color) {
-        // Здесь используем твой RenderUtil
+        // Логика отрисовки бокса
     }
 
     private void renderTracer(MatrixStack matrixStack, Vec3d target, Color color) {
