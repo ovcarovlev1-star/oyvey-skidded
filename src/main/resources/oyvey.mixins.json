@@ -18,7 +18,9 @@
     "MixinLightmapTextureManager",
     "MixinLivingEntity",
     "MixinRenderTickCounter",
-    "MixinWorldRenderer"
+    "MixinWorldRenderer",
+    "MouseAccessor",
+    "MixinMouse"
   ],
   "injectors": {
     "defaultRequire": 1
