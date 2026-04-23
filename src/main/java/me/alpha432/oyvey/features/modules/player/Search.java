@@ -1,4 +1,4 @@
-package me.alpha432.oyvey.features.modules.render;
+package me.alpha432.oyvey.features.modules.player;
 
 import me.alpha432.oyvey.features.modules.Module;
 import net.minecraft.block.Block;
@@ -16,7 +16,8 @@ public class Search extends Module {
     private Block targetBlock = Blocks.DIAMOND_ORE; // Можно вынести в настройки
 
     public Search() {
-        super("Search", "Highlights blocks like Wurst", Category.RENDER, true, false, false);
+        // Категория заменена на PLAYER
+        super("Search", "Highlights blocks like Wurst", Category.PLAYER, true, false, false);
     }
 
     @Override
