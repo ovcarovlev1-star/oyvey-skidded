@@ -1,4 +1,4 @@
-package me.alpha432.oyvey.features.modules.render;
+package me.alpha432.oyvey.features.modules.player;
 
 import me.alpha432.oyvey.features.modules.Module;
 import net.minecraft.block.entity.*;
@@ -32,7 +32,8 @@ public class Search extends Module {
     }
 
     public Search() {
-        super("Search", "Advanced BlockEntity ESP", Category.RENDER, true, false, false);
+        // Категория заменена на PLAYER
+        super("Search", "Advanced BlockEntity ESP", Category.PLAYER, true, false, false);
     }
 
     @Override
@@ -60,7 +61,6 @@ public class Search extends Module {
             Color c = type.color;
 
             // 1. Получаем форму блока (Box)
-            // .toImmutable() и getStack/getBoundingBox в 1.21 позволяют получить точную форму
             Box box = mc.world.getBlockState(pos).getCollisionShape(mc.world, pos).getBoundingBox();
             Box renderBox = box.offset(pos); 
 
@@ -76,17 +76,12 @@ public class Search extends Module {
 
     private void renderESP(MatrixStack matrixStack, Box box, Color color) {
         // Здесь используем твой RenderUtil
-        // RenderUtil.drawFilledBox(matrixStack, box, color.getRGB());
-        // RenderUtil.drawOutline(matrixStack, box, color.getRGB(), 1.5f);
     }
 
     private void renderTracer(MatrixStack matrixStack, Vec3d target, Color color) {
-        // Логика отрисовки линии от прицела (или ног) игрока к центру объекта
-        Vec3d start = new Vec3d(0, 0, 75) // Вектор взгляда (зависит от твоего RenderUtil)
+        Vec3d start = new Vec3d(0, 0, 75) 
                 .rotateX(-(float) Math.toRadians(mc.player.getPitch()))
                 .rotateY(-(float) Math.toRadians(mc.player.getYaw()))
                 .add(mc.player.getEyePos());
-
-        // RenderUtil.drawLine(start, target, color, 1.0f);
     }
 }
