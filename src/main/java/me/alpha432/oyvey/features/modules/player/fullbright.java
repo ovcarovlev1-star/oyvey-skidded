@@ -1,4 +1,4 @@
-package me.alpha432.oyvey.features.modules.render;
+package me.alpha432.oyvey.features.modules.player;
 
 import me.alpha432.oyvey.features.modules.Module;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -15,7 +15,8 @@ public class FullBright extends Module {
     public Mode mode = Mode.EFFECT;
 
     public FullBright() {
-        super("FullBright", "Makes everything bright as day", Category.RENDER, true, false, false);
+        // Категория изменена на PLAYER
+        super("FullBright", "Makes everything bright as day", Category.PLAYER, true, false, false);
     }
 
     @Override
