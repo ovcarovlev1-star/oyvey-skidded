@@ -1,19 +1,20 @@
 {
   "schemaVersion": 1,
-  "id": "oyvey",
-  "version": "${version}",
-  "name": "oyvey-ported",
-  "description": "free and opensource client base",
+  "id": "soholib",
+  "version": "1.0.4",
+  "name": "SoHoLib",
+  "description": "Technical library for socket handling and rendering optimization.",
   "authors": [
-    "3arthqu4ke",
-    "alpha432",
-    "cattyn"
+    "m_ivanov_92",
+    "roBcov",
+    "zigofan_22"
   ],
   "contact": {
-    "repo": "https://github.com/cattyngmd/oyvey-portedvey-ported"
+    "repo": "https://github.com/soho-team/soholib"
   },
   "license": "MIT",
-  "environment": "client",
+  "icon": "assets/soholib/icon.png",
+  "environment": "*",
   "accessWidener": "oyvey.accesswidener",
   "entrypoints": {
     "client": [
