@@ -1,4 +1,4 @@
-package me.alpha432.oyvey.features.modules.render;
+package me.alpha432.oyvey.features.modules.player;
 
 import me.alpha432.oyvey.features.modules.Module;
 import net.minecraft.client.util.math.MatrixStack;
@@ -16,7 +16,8 @@ public class Freecam extends Module {
     private float camPitch;
 
     public Freecam() {
-        super("Freecam", "Spectator mode without changing gamemode", Category.RENDER, true, false, false);
+        // Категория изменена на PLAYER
+        super("Freecam", "Spectator mode without changing gamemode", Category.PLAYER, true, false, false);
     }
 
     // Это заставит OyVey показывать координаты духа в меню/списке
