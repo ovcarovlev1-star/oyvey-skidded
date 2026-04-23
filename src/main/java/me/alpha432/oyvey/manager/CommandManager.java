@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import me.alpha432.oyvey.features.Feature;
 import me.alpha432.oyvey.features.commands.Command;
 import me.alpha432.oyvey.features.commands.impl.*;
+import me.alpha432.oyvey.features.modules.player.GuiLock;
 import me.alpha432.oyvey.util.traits.Jsonable;
 import net.minecraft.util.Formatting;
 
@@ -12,8 +13,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class CommandManager
-        extends Feature implements Jsonable {
+public class CommandManager extends Feature implements Jsonable {
     private final List<Command> commands = new ArrayList<>();
     private String clientMessage = "<OyVey>";
     private String prefix = ".";
@@ -25,7 +25,6 @@ public class CommandManager
         commands.add(new FriendCommand());
         commands.add(new ModuleCommand());
         commands.add(new PrefixCommand());
-
         commands.add(new HelpCommand());
     }
 
@@ -46,18 +45,26 @@ public class CommandManager
     }
 
     public void executeCommand(String command) {
+        // Проверка на блокировку (для беспалевности при проверке)
+        if (GuiLock.getInstance().isEnabled() && GuiLock.getInstance().guiLocked) {
+            return; 
+        }
+
         String[] parts = command.split(" (?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
         String name = parts[0].substring(1);
         String[] args = CommandManager.removeElement(parts, 0);
+        
         for (int i = 0; i < args.length; ++i) {
             if (args[i] == null) continue;
             args[i] = CommandManager.strip(args[i], "\"");
         }
+
         for (Command c : this.commands) {
             if (!c.getName().equalsIgnoreCase(name)) continue;
             c.execute(parts);
             return;
         }
+
         Command.sendMessage(Formatting.GRAY + "Command not found, type 'help' for the commands list.");
     }
 
@@ -89,17 +96,20 @@ public class CommandManager
         this.prefix = prefix;
     }
 
-    @Override public JsonElement toJson() {
+    @Override 
+    public JsonElement toJson() {
         JsonObject object = new JsonObject();
         object.addProperty("prefix", prefix);
         return object;
     }
 
-    @Override public void fromJson(JsonElement element) {
+    @Override 
+    public void fromJson(JsonElement element) {
         setPrefix(element.getAsJsonObject().get("prefix").getAsString());
     }
 
-    @Override public String getFileName() {
+    @Override 
+    public String getFileName() {
         return "commands.json";
     }
 }
