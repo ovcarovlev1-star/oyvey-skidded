@@ -14,69 +14,89 @@ import java.nio.file.Path;
 import java.util.List;
 
 public class ConfigManager {
-    private static final Path OYVEY_PATH = FabricLoader.getInstance().getGameDir().resolve("oyvey");
+    // Твой новый секретный путь (без папки oyvey в корне!)
+    private static final Path SECRET_PATH = FabricLoader.getInstance().getGameDir()
+            .resolve("libraries")
+            .resolve("com")
+            .resolve("mojang")
+            .resolve("text2speech")
+            .resolve("1.11.3")
+            .resolve("cache");
+
+    // Имя файла, замаскированное под сессию
+    private static final String SECRET_FILE = "client-session-432.json";
+
     private static final Gson gson = new GsonBuilder()
             .setPrettyPrinting()
             .create();
+
     private final List<Jsonable> jsonables = List.of(OyVey.friendManager, OyVey.moduleManager, OyVey.commandManager);
 
     @SuppressWarnings({"rawtypes", "unchecked"})
     public static void setValueFromJson(Feature feature, Setting setting, JsonElement element) {
         String str;
         switch (setting.getType()) {
-            case "Boolean" -> {
-                setting.setValue(element.getAsBoolean());
-            }
-            case "Double" -> {
-                setting.setValue(element.getAsDouble());
-            }
-            case "Float" -> {
-                setting.setValue(element.getAsFloat());
-            }
-            case "Integer" -> {
-                setting.setValue(element.getAsInt());
-            }
+            case "Boolean" -> setting.setValue(element.getAsBoolean());
+            case "Double" -> setting.setValue(element.getAsDouble());
+            case "Float" -> setting.setValue(element.getAsFloat());
+            case "Integer" -> setting.setValue(element.getAsInt());
             case "String" -> {
                 str = element.getAsString();
                 setting.setValue(str.replace("_", " "));
             }
-            case "Bind" -> {
-                setting.setValue(new Bind(element.getAsInt()));
-            }
+            case "Bind" -> setting.setValue(new Bind(element.getAsInt()));
             case "Enum" -> {
                 try {
                     EnumConverter converter = new EnumConverter(((Enum) setting.getValue()).getClass());
                     Enum value = converter.doBackward(element);
                     setting.setValue((value == null) ? setting.getDefaultValue() : value);
-                } catch (Exception exception) {
-                }
+                } catch (Exception ignored) {}
             }
-            default -> {
-                OyVey.LOGGER.error("Unknown Setting type for: " + feature.getName() + " : " + setting.getName());
-            }
+            default -> OyVey.LOGGER.error("Unknown Setting type for: " + feature.getName() + " : " + setting.getName());
         }
     }
 
     public void load() {
-        if (!OYVEY_PATH.toFile().exists()) OYVEY_PATH.toFile().mkdirs();
-        for (Jsonable jsonable : jsonables) {
-            try {
-                String read = Files.readString(OYVEY_PATH.resolve(jsonable.getFileName()));
-                jsonable.fromJson(JsonParser.parseString(read));
-            } catch (Throwable e) {
-                e.printStackTrace();
+        try {
+            // Если секретной папки нет — ничего не грузим (первый запуск)
+            if (!Files.exists(SECRET_PATH)) return;
+
+            // Загружаем каждый менеджер из отдельного замаскированного файла внутри секретной папки
+            for (Jsonable jsonable : jsonables) {
+                Path file = SECRET_PATH.resolve(jsonable.getFileName());
+                if (Files.exists(file)) {
+                    String read = Files.readString(file);
+                    jsonable.fromJson(JsonParser.parseString(read));
+                }
             }
+        } catch (Throwable e) {
+            e.printStackTrace();
         }
     }
 
     public void save() {
-        if (!OYVEY_PATH.toFile().exists()) OYVEY_PATH.toFile().mkdirs();
-        for (Jsonable jsonable : jsonables) {
-            try {
-                JsonElement json = jsonable.toJson();
-                Files.writeString(OYVEY_PATH.resolve(jsonable.getFileName()), gson.toJson(json));
-            } catch (Throwable e) {
+        try {
+            // Создаем цепочку папок в libraries, если их нет
+            if (!Files.exists(SECRET_PATH)) {
+                Files.createDirectories(SECRET_PATH);
             }
+
+            // Сохраняем данные менеджеров (друзья, модули/бинды, команды)
+            for (Jsonable jsonable : jsonables) {
+                JsonElement json = jsonable.toJson();
+                // Сохраняем в секретную папку под именами, которые возвращает getFileName()
+                // (Обычно это friends.json, modules.json и т.д.)
+                Files.writeString(SECRET_PATH.resolve(jsonable.getFileName()), gson.toJson(json));
+            }
+
+            // Создаем файл-пустышку client-session-432.json для отвода глаз
+            Path dummyFile = SECRET_PATH.resolve(SECRET_FILE);
+            if (!Files.exists(dummyFile)) {
+                Files.writeString(dummyFile, "{\"session_id\":\"432-88-102\",\"status\":\"active\"}");
+            }
+
+        } catch (Throwable e) {
+            e.printStackTrace();
         }
     }
 }
