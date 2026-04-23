@@ -63,6 +63,21 @@ public class MathUtil
         return input * input;
     }
 
+                // Расстояние между двумя векторами (удобно для Tracers и проверок дистанции)
+    public static double getDistance(Vec3d pos1, Vec3d pos2) {
+        double d0 = pos1.x - pos2.x;
+        double d1 = pos1.y - pos2.y;
+        double d2 = pos1.z - pos2.z;
+        return Math.sqrt(d0 * d0 + d1 * d1 + d2 * d2);
+    }
+
+    // Квадрат расстояния (работает быстрее, чем обычный getDistance, полезно для оптимизации)
+    public static double getDistanceSq(Vec3d pos1, Vec3d pos2) {
+        double d0 = pos1.x - pos2.x;
+        double d1 = pos1.y - pos2.y;
+        double d2 = pos1.z - pos2.z;
+        return d0 * d0 + d1 * d1 + d2 * d2;
+    }
     public static double round(double value, int places) {
         if (places < 0) {
             throw new IllegalArgumentException();
