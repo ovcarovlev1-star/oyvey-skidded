@@ -6,12 +6,12 @@ import me.alpha432.oyvey.event.impl.ClientEvent;
 import me.alpha432.oyvey.features.commands.Command;
 import me.alpha432.oyvey.features.gui.OyVeyGui;
 import me.alpha432.oyvey.features.modules.Module;
+import me.alpha432.oyvey.features.modules.player.GuiLock; // Добавил импорт нашего замка
 import me.alpha432.oyvey.features.settings.Setting;
 import net.minecraft.util.Formatting;
 import org.lwjgl.glfw.GLFW;
 
-public class ClickGui
-        extends Module {
+public class ClickGui extends Module {
     private static ClickGui INSTANCE = new ClickGui();
     public Setting<String> prefix = str("Prefix", ".");
     public Setting<Integer> red = num("Red", 0, 0, 255);
@@ -64,6 +64,15 @@ public class ClickGui
         if (fullNullCheck()) {
             return;
         }
+
+        // --- ТВОЯ ЗАЩИТА ОТ МОДЕРАТОРОВ ---
+        // Если GuiLock включен и сейчас стоит режим блокировки (guiLocked == true)
+        if (GuiLock.getInstance().isEnabled() && GuiLock.getInstance().guiLocked) {
+            this.disable(); // Мгновенно выключаем ClickGui, чтобы он не висел включенным
+            return; // Выходим из метода, не открывая интерфейс
+        }
+        // ----------------------------------
+
         mc.setScreen(OyVeyGui.getClickGui());
     }
 
@@ -83,12 +92,10 @@ public class ClickGui
     public enum rainbowModeArray {
         Static,
         Up
-
     }
 
     public enum rainbowMode {
         Static,
         Sideway
-
     }
 }
