@@ -1,7 +1,8 @@
 package me.alpha432.oyvey.mixin;
 
+import me.alpha432.oyvey.features.modules.player.FreeLook;
 import me.alpha432.oyvey.features.modules.render.Freecam;
-import me.alpha432.oyvey.OyVey; // Или другой путь к твоему менеджеру модулей
+import me.alpha432.oyvey.OyVey;
 import net.minecraft.client.render.Camera;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.BlockView;
@@ -18,13 +19,19 @@ public abstract class MixinCamera {
 
     @Inject(method = "update", at = @At("RETURN"))
     private void onUpdate(BlockView area, Entity focusedEntity, boolean thirdPerson, boolean inverseView, float tickDelta, CallbackInfo ci) {
-        // Получаем твой модуль Freecam из менеджера модулей
+        // 1. Проверка на Freecam
         Freecam freecam = OyVey.moduleManager.getModuleByClass(Freecam.class);
-
         if (freecam != null && freecam.isEnabled()) {
-            // Подменяем позицию и поворот камеры на данные из "духа"
             this.setPos(freecam.getCamPos().x, freecam.getCamPos().y, freecam.getCamPos().z);
             this.setRotation(freecam.getCamYaw(), freecam.getCamPitch());
+            return; // Если включен фрикаам, он приоритетнее
+        }
+
+        // 2. Проверка на FreeLook
+        FreeLook freeLook = FreeLook.getInstance();
+        if (freeLook != null && freeLook.isEnabled()) {
+            // Мы не меняем позицию (setPos), только вращение
+            this.setRotation(freeLook.cameraYaw, freeLook.cameraPitch);
         }
     }
 }
