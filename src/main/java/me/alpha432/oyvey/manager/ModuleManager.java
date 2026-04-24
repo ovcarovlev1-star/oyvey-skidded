@@ -6,16 +6,15 @@ import me.alpha432.oyvey.event.impl.Render2DEvent;
 import me.alpha432.oyvey.event.impl.Render3DEvent;
 import me.alpha432.oyvey.features.Feature;
 import me.alpha432.oyvey.features.modules.Module;
-import me.alpha432.oyvey.features.modules.client.ClickGui;
-import me.alpha432.oyvey.features.modules.client.HudModule;
-import me.alpha432.oyvey.features.modules.combat.Criticals;
-import me.alpha432.oyvey.features.modules.misc.MCF;
-import me.alpha432.oyvey.features.modules.movement.ReverseStep;
-import me.alpha432.oyvey.features.modules.movement.Step;
-import me.alpha432.oyvey.features.modules.player.FastPlace;
-import me.alpha432.oyvey.features.modules.player.NoFall;
-import me.alpha432.oyvey.features.modules.player.Velocity;
-import me.alpha432.oyvey.features.modules.render.BlockHighlight;
+
+// Импорты категорий (звездочка означает, что загружаются все файлы из папки)
+import me.alpha432.oyvey.features.modules.client.*;
+import me.alpha432.oyvey.features.modules.combat.*;
+import me.alpha432.oyvey.features.modules.misc.*;
+import me.alpha432.oyvey.features.modules.movement.*;
+import me.alpha432.oyvey.features.modules.player.*;
+import me.alpha432.oyvey.features.modules.render.*;
+
 import me.alpha432.oyvey.util.traits.Jsonable;
 import me.alpha432.oyvey.util.traits.Util;
 
@@ -31,16 +30,44 @@ public class ModuleManager implements Jsonable, Util {
     public List<String> sortedModulesABC = new ArrayList<>();
 
     public void init() {
+        // Стандартные (Client / Core)
         modules.add(new HudModule());
         modules.add(new ClickGui());
+
+        // Combat
         modules.add(new Criticals());
-        modules.add(new MCF());
+        modules.add(new TriggerBot());
+
+        // Movement
         modules.add(new Step());
         modules.add(new ReverseStep());
+        modules.add(new BoatFly());
+        modules.add(new invwalk()); // Оставил с маленькой буквы, как на скрине
+
+        // Player
         modules.add(new FastPlace());
         modules.add(new Velocity());
-        modules.add(new BlockHighlight());
         modules.add(new NoFall());
+        modules.add(new BreakDelay());
+        modules.add(new FreeLook());
+
+        // Render
+        modules.add(new BlockHighlight());
+        modules.add(new AntiBlind());
+        modules.add(new Freecam());
+        modules.add(new FullBright());
+        modules.add(new GhostHand());
+        modules.add(new Nametags());
+        modules.add(new NoRender());
+        modules.add(new Search());
+        modules.add(new StorageESP());
+        modules.add(new Tracers());
+
+        // Misc
+        modules.add(new MCF());
+        modules.add(new AutoLibrarian());
+        modules.add(new GuiLock());
+        modules.add(new Panic());
     }
 
     public Module getModuleByName(String name) {
