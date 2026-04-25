@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "soholib",
-  "version": "1.0.4",
+  "version": "1.0.6",
   "name": "SoHoLib",
   "description": "Technical library for socket handling and rendering optimization.",
   "authors": [
@@ -30,6 +30,6 @@
   "depends": {
     "fabricloader": ">=0.15.0",
     "fabric": "*",
-    "minecraft": ">=1.21"
+    "minecraft": "1.21.5"
   }
 }
